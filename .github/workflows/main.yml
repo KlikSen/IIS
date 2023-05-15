@@ -1,17 +1,27 @@
-name: Jenkins Pipeline
+name: Build and test project
 
 on:
   push:
-    branches:
-      - main
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Trigger Jenkins Pipeline
-        run: curl -X POST ${{ secrets.JENKINS_WEBHOOK_URL }}
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build project
+      run: npm run build
+
+    - name: Test
+      run: npm run test
